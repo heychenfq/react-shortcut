@@ -3,7 +3,6 @@ import { ReactShortcutContext, ReactShortcutContextValue } from './shortcut-cont
 import { ShortcutRegistry } from './shortcut-registry';
 
 export interface ReactShortcutOptions {
-  global?: boolean;
   strict?: boolean;
   debug?: boolean;
 }
@@ -14,8 +13,8 @@ export interface ReactShortcutProviderProps {
 }
 
 export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function ReactShortcutProvider(props) {
-  const { children, options: { global = true, strict = false, debug = false } = {} } = props;
-  const ref = useRef<HTMLDivElement>(null);
+  const { children, options: { strict = false, debug = false } = {} } = props;
+  const ref = useRef<HTMLElement>(null);
 
   const shortcutRegistry = useMemo(() => {
     return new ShortcutRegistry({ strict, debug });
@@ -27,24 +26,16 @@ export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function Re
       unregisterShortcut: shortcutRegistry.unregisterShortcut.bind(shortcutRegistry),
       isShortcutRegistered: shortcutRegistry.isShortcutRegistered.bind(shortcutRegistry),
       getCurrentKeyPressed: shortcutRegistry.getCurrentKeyPressed.bind(shortcutRegistry),
+      onKeyPressedChange: shortcutRegistry.onKeyPressedChange.bind(shortcutRegistry),
+      ref,
     };
   }, []);
 
   useEffect(() => {
-    return shortcutRegistry.attachElement(global ? window : ref.current!);
+    return shortcutRegistry.attachElement(ref.current ?? window);
   }, []);
 
-  return (
-    <ReactShortcutContext.Provider value={contextValue}>
-      {global ? (
-        children
-      ) : (
-        <div ref={ref} tabIndex={-1}>
-          {children}
-        </div>
-      )}
-    </ReactShortcutContext.Provider>
-  );
+  return <ReactShortcutContext.Provider value={contextValue}>{children}</ReactShortcutContext.Provider>;
 };
 
 ReactShortcutProvider.displayName = 'ReactShortcutProvider';

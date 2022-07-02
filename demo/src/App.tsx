@@ -1,30 +1,46 @@
-import { useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ReactShortcutProvider, useShortcut } from '../../src';
 import './App.css';
 
 function App() {
   return (
-    <ReactShortcutProvider options={{ debug: true }}>
-      <Main />
-    </ReactShortcutProvider>
+    <>
+      <header className="header">
+        <h1>Click below area start to try!</h1>
+      </header>
+      <main className="body">
+        <ReactShortcutProvider options={{ debug: true, strict: true }}>
+          <Main title="Strict Mode" />
+        </ReactShortcutProvider>
+        <ReactShortcutProvider options={{ debug: true, strict: false }}>
+          <Main title="Loose Mode" />
+        </ReactShortcutProvider>
+      </main>
+    </>
   );
 }
 
-function Main() {
-  const { registerShortcut, unregisterShortcut } = useShortcut();
+interface MainProps {
+  title: string;
+}
+
+const Main: FC<MainProps> = function Main(props) {
+  const [keyPressed, setKeyPressed] = useState<string>('');
+
+  const { onKeyPressedChange, ref } = useShortcut();
 
   useEffect(() => {
-    const result = registerShortcut('ControlOrCommand+Shift+o+o', (e) => {
-      console.log(e);
-    });
-    console.log('register result', result);
-    return () => {
-      const result = unregisterShortcut('ControlOrCommand+Shift+o+o');
-      console.log('unregister result', result);
-    };
+    return onKeyPressedChange(setKeyPressed);
   }, []);
 
-  return <main>Hello ReactShortCut!!</main>;
-}
+  return (
+    <div className="main" ref={ref} tabIndex={-1}>
+      <h2>{props.title}</h2>
+      <div className="display-area">
+        <h3>You Pressed: {keyPressed}.</h3>
+      </div>
+    </div>
+  );
+};
 
 export default App;
