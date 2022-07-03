@@ -264,7 +264,7 @@ describe('parseAccelerator', () => {
         ],
       ]
     `);
-    expect(parser.parseAccelerator('Command+Option+Shift++')).toMatchInlineSnapshot(`
+    expect(parser.parseAccelerator('Command+Option+Shift+=')).toMatchInlineSnapshot(`
       Array [
         Array [
           "AltLeft+MetaLeft+ShiftLeft",
@@ -285,7 +285,7 @@ describe('parseAccelerator', () => {
           "AltRight+OSRight+ShiftRight",
         ],
         Array [
-          "Plus",
+          "Equal",
         ],
       ]
     `);

@@ -5,6 +5,7 @@ import { ShortcutRegistry } from './shortcut-registry';
 export interface ReactShortcutOptions {
   strict?: boolean;
   debug?: boolean;
+  scope?: React.RefObject<HTMLElement>;
 }
 
 export interface ReactShortcutProviderProps {
@@ -13,8 +14,7 @@ export interface ReactShortcutProviderProps {
 }
 
 export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function ReactShortcutProvider(props) {
-  const { children, options: { strict = false, debug = false } = {} } = props;
-  const ref = useRef<HTMLElement>(null);
+  const { children, options: { strict = false, debug = false, scope } = {} } = props;
 
   const shortcutRegistry = useMemo(() => {
     return new ShortcutRegistry({ strict, debug });
@@ -26,14 +26,23 @@ export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function Re
       unregisterShortcut: shortcutRegistry.unregisterShortcut.bind(shortcutRegistry),
       isShortcutRegistered: shortcutRegistry.isShortcutRegistered.bind(shortcutRegistry),
       getCurrentKeyPressed: shortcutRegistry.getCurrentKeyPressed.bind(shortcutRegistry),
-      onKeyPressedChange: shortcutRegistry.onKeyPressedChange.bind(shortcutRegistry),
-      ref,
+      getElement() {
+        if (!scope) {
+          return window;
+        } else if (scope.current) {
+          return scope.current;
+        }
+      },
     };
-  }, []);
+  }, [scope?.current]);
 
   useEffect(() => {
-    return shortcutRegistry.attachElement(ref.current ?? window);
-  }, []);
+    if (!scope) {
+      return shortcutRegistry.attachElement(window);
+    } else if (scope.current) {
+      return shortcutRegistry.attachElement(scope.current);
+    }
+  }, [scope?.current]);
 
   return <ReactShortcutContext.Provider value={contextValue}>{children}</ReactShortcutContext.Provider>;
 };

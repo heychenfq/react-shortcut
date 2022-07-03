@@ -8,7 +8,7 @@ import {
   ModifierKeyCodeName,
   KeyCodeName,
 } from './key-codes';
-import { Dispose, KeyPressedListener, ShortcutCallback } from './shortcut-context';
+import { Dispose, ShortcutCallback } from './shortcut-context';
 import { AcceleratorParser, type Accelerator } from './accelerator-parser';
 import { noop } from './utils';
 
@@ -53,7 +53,6 @@ export class ShortcutRegistry {
   private readonly debug: (...args: any[]) => void;
   private readonly options: ShortcutRegisterOptions;
   private readonly parser = new AcceleratorParser();
-  private readonly keyPressedListener: Array<KeyPressedListener> = [];
   private shortcutRegistered: Array<ShortcutRegister> = [];
   private modifiersPressed: Array<ModifierKeyCode> = [];
   private normalKeysPressed: Array<NormalKeyCode> = [];
@@ -138,14 +137,6 @@ export class ShortcutRegistry {
     ].join(AcceleratorParser.separator);
   }
 
-  onKeyPressedChange(cb: KeyPressedListener): () => void {
-    const position = this.keyPressedListener.length;
-    this.keyPressedListener.push(cb);
-    return () => {
-      this.keyPressedListener.splice(position, 1);
-    };
-  }
-
   private matchShortcut(modifiers: Array<Accelerator>, normalKeys: Array<Accelerator>): ShortcutRegister | undefined {
     return this.shortcutRegistered.find((item) => {
       const modifiersSet = new Set([...item.modifiers, ...modifiers]);
@@ -190,9 +181,6 @@ export class ShortcutRegistry {
     } else {
       this.normalKeysPressed.push(keycode);
     }
-    this.keyPressedListener.forEach((item) => {
-      item(this.getCurrentKeyPressed());
-    });
     this.triggerShortcutEventIfHandlerFound(event);
   }
 
@@ -204,18 +192,12 @@ export class ShortcutRegistry {
       });
       // reset keycode record when modifiers change
       this.normalKeysPressed = [];
-      this.keyPressedListener.forEach((item) => {
-        item(this.getCurrentKeyPressed());
-      });
     }
   }
 
   private clear() {
     this.modifiersPressed = [];
     this.normalKeysPressed = [];
-    this.keyPressedListener.forEach((item) => {
-      item(this.getCurrentKeyPressed());
-    });
   }
 
   private triggerShortcutEventIfHandlerFound(event: KeyboardEvent) {

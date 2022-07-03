@@ -71,7 +71,7 @@ export type NormalKeyCode =
   // others
   | 'Escape'
   | 'Minus'
-  | 'Plus'
+  | 'Equal'
   | 'Backspace'
   | 'Delete'
   | 'Tab'
@@ -176,7 +176,7 @@ export type NormalKeyCodeName =
   | 'Esc'
   | 'Escape'
   | '-'
-  | '+'
+  | '='
   | 'Backspace'
   | 'Delete'
   | 'Tab'
@@ -282,7 +282,7 @@ export const keyCodeName2KeyCode = new Map<KeyCodeName, Array<KeyCode>>([
   ['Esc', ['Escape']],
   ['Escape', ['Escape']],
   ['-', ['Minus']],
-  ['+', ['Plus']],
+  ['=', ['Equal']],
   ['Backspace', ['Backspace']],
   ['Delete', ['Delete']],
   ['Tab', ['Tab']],
@@ -374,7 +374,7 @@ export const keyCode2KeyCodeName = new Map<KeyCode, KeyCodeName>([
   // others
   ['Escape', 'Escape'],
   ['Minus', '-'],
-  ['Plus', '+'],
+  ['Equal', '='],
   ['Backspace', 'Backspace'],
   ['Delete', 'Delete'],
   ['Tab', 'Tab'],

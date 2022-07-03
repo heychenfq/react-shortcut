@@ -2,7 +2,6 @@ import React from 'react';
 import { Accelerator } from './accelerator-parser';
 
 export type ShortcutCallback = (event: KeyboardEvent) => void;
-export type KeyPressedListener = (accelerator: Accelerator) => void;
 export type Dispose = () => void;
 
 export interface ReactShortcutContextValue {
@@ -10,8 +9,7 @@ export interface ReactShortcutContextValue {
   unregisterShortcut(accelerator: Accelerator): boolean;
   isShortcutRegistered(accelerator: Accelerator): boolean;
   getCurrentKeyPressed(): Accelerator;
-  onKeyPressedChange(cb: KeyPressedListener): Dispose;
-  ref: React.RefObject<any>;
+  getElement(): HTMLElement | Window | undefined;
 }
 
 export const ReactShortcutContext = React.createContext<ReactShortcutContextValue>({
@@ -19,8 +17,7 @@ export const ReactShortcutContext = React.createContext<ReactShortcutContextValu
   unregisterShortcut: () => throwProviderNotFoundError(),
   isShortcutRegistered: () => throwProviderNotFoundError(),
   getCurrentKeyPressed: () => throwProviderNotFoundError(),
-  onKeyPressedChange: () => throwProviderNotFoundError(),
-  ref: React.createRef(),
+  getElement: () => throwProviderNotFoundError(),
 });
 
 function throwProviderNotFoundError(): never {
