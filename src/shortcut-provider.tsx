@@ -1,4 +1,4 @@
-import { ReactNode, FC, useRef, useEffect, useMemo } from 'react';
+import { ReactNode, FC, useEffect, useMemo } from 'react';
 import { ReactShortcutContext, ReactShortcutContextValue } from './shortcut-context';
 import { ShortcutRegistry } from './shortcut-registry';
 
@@ -24,6 +24,8 @@ export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function Re
     return {
       registerShortcut: shortcutRegistry.registerShortcut.bind(shortcutRegistry),
       unregisterShortcut: shortcutRegistry.unregisterShortcut.bind(shortcutRegistry),
+      enableShortcut: shortcutRegistry.enableShortcut.bind(shortcutRegistry),
+      disableShortcut: shortcutRegistry.disableShortcut.bind(shortcutRegistry),
       isShortcutRegistered: shortcutRegistry.isShortcutRegistered.bind(shortcutRegistry),
       getCurrentKeyPressed: shortcutRegistry.getCurrentKeyPressed.bind(shortcutRegistry),
       getElement() {

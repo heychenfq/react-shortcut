@@ -182,6 +182,38 @@ describe('unregisterShortcut', () => {
   });
 });
 
+describe('enableShortcut and disableShortcut', () => {
+  it('return false when shortcut has not registered yet or accelerator is invalid', () => {
+    let result = true;
+    result = shortRegistry.enableShortcut('Ctrl+a');
+    expect(result).toBe(false);
+    result = shortRegistry.disableShortcut('Ctrl+a');
+    expect(result).toBe(false);
+    result = shortRegistry.enableShortcut('ctrl+a');
+    expect(result).toBe(false);
+    result = shortRegistry.disableShortcut('ctrl+a');
+    expect(result).toBe(false);
+  });
+
+  it('handle should not be invoked while shortcut is disabled', () => {
+    const handler = jest.fn();
+    let result = false;
+    result = shortRegistry.registerShortcut('Ctrl+a', handler);
+    expect(result).toBe(true);
+    dispatchEvent('keydown', 'ControlLeft');
+    dispatchEvent('keydown', 'KeyA');
+    expect(handler).toBeCalledTimes(1);
+    result = shortRegistry.disableShortcut('Control+a');
+    expect(result).toBe(true);
+    dispatchEvent('keydown', 'KeyA');
+    expect(handler).toBeCalledTimes(1);
+    result = shortRegistry.enableShortcut('Control+a');
+    expect(result).toBe(true);
+    dispatchEvent('keydown', 'KeyA');
+    expect(handler).toBeCalledTimes(2);
+  });
+});
+
 describe('isShortcutRegistered', () => {
   it('return true when shortcut registered', () => {
     shortRegistry.registerShortcut('Ctrl+Alt+a', jest.fn());

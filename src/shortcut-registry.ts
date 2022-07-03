@@ -16,6 +16,7 @@ interface ShortcutRegister {
   accelerator: Accelerator;
   modifiers: Array<Accelerator>;
   normalKeys: Array<Accelerator>;
+  enabled: boolean;
   callback: ShortcutCallback;
 }
 
@@ -85,6 +86,7 @@ export class ShortcutRegistry {
         modifiers,
         normalKeys,
         callback,
+        enabled: true,
       });
       return true;
     } catch (e: any) {
@@ -101,6 +103,38 @@ export class ShortcutRegistry {
         return false;
       }
       this.shortcutRegistered = this.shortcutRegistered.filter((item) => item !== shortcutRegister);
+      return true;
+    } catch (e: any) {
+      this.debug(e.message);
+      return false;
+    }
+  }
+
+  disableShortcut(accelerator: Accelerator): boolean {
+    try {
+      const [modifiers, normalKeys] = this.parser.parseAccelerator(accelerator);
+      const matchShortcut = this.matchShortcut(modifiers, normalKeys);
+      if (!matchShortcut) {
+        this.debug(`Shortcut ${accelerator} is not register yet.`);
+        return false;
+      }
+      matchShortcut.enabled = false;
+      return true;
+    } catch (e: any) {
+      this.debug(e.message);
+      return false;
+    }
+  }
+
+  enableShortcut(accelerator: Accelerator): boolean {
+    try {
+      const [modifiers, normalKeys] = this.parser.parseAccelerator(accelerator);
+      const matchShortcut = this.matchShortcut(modifiers, normalKeys);
+      if (!matchShortcut) {
+        this.debug(`Shortcut ${accelerator} is not register yet.`);
+        return false;
+      }
+      matchShortcut.enabled = true;
       return true;
     } catch (e: any) {
       this.debug(e.message);
@@ -209,7 +243,9 @@ export class ShortcutRegistry {
       );
     });
     if (shortcutRegister) {
-      shortcutRegister.callback(event);
+      if (shortcutRegister.enabled) {
+        shortcutRegister.callback(event);
+      }
       this.normalKeysPressed = [];
     }
   }

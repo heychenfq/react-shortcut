@@ -272,6 +272,50 @@ function Main() {
 }
 ```
 
+### 6. Dynamic enable/disable shortcut.
+
+```tsx
+import React, { useEffect, useCallback, useState } from 'react';
+import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+
+function App() {
+  return (
+    <ReactShortcutProvider>
+      <Main />
+    </ReactShortcutProvider>
+  );
+}
+
+function Main() {
+  const { registerShortcut, unregisterShortcut, enableShortcut, disableShortcut } = useShortcut();
+  const [enable, setEnable] = useState<boolean>(true);
+
+  const handleClick = useCallback(() => {
+    setEnable((prev) => {
+      if (prev) {
+        disableShortcut('Ctrl+a');
+      } else {
+        enableShortcut('Ctrl+a');
+      }
+      return !prev;
+    });
+  }, []);
+
+  // RegisterShortcut should be invoked in useEffect.
+  useEffect(() => {
+    registerShortcut('Ctrl+a', (event) => {
+      // invoked when key Control and key A pressed and enable is true.
+      console.log('You pressed Control and A');
+    });
+    return () => {
+      unregisterShortcut('Ctrl+a');
+    };
+  }, []);
+
+  return <button onClick={handleClick}>{enable ? 'disable' : 'enable'}</button>;
+}
+```
+
 ### Some shortcut match rules example.
 
 | **Actions**                                                                                                                                 | **Accelerator**      | **Matched** |
@@ -312,21 +356,23 @@ type ShortcutCallback = (event: KeyboardEvent) => void;
 interface ReactShortcutContextValue {
   registerShortcut(accelerator: Accelerator, callback: ShortcutCallback): boolean;
   unregisterShortcut(accelerator: Accelerator): boolean;
+  enableShortcut(accelerator: Accelerator): boolean;
+  disableShortcut(accelerator: Accelerator): boolean;
   isShortcutRegistered(accelerator: Accelerator): boolean;
   getCurrentKeyPressed(): Accelerator;
   getElement(): HTMLElement | Window | undefined;
 }
 ```
 
-### `Accelerator: string`
+### `Accelerator: string;`
 
 Shortcut description, consist of multiple modifiers or normal keys join with `+`,for example `Ctrl+Alt+a`. All supported keys have list above. The order of modifiers does not affect, so the `Ctrl+Alt+a` and `Alt+Ctrl+a` are exact the same. But `Ctrl+Alt+a+b` is not equal to `Ctrl+Alt+b+a`. Modifiers must preceding normal keys, `a+Ctrl` is invalid.
 
-### `ReactShortcutProvider: React.FC<ReactShortcutProviderProps>`
+### `ReactShortcutProvider: React.FC<ReactShortcutProviderProps>;`
 
 React Context Provider of `react-shortcut`. The most common used case is wrap in the root react component. You can also apply multiple `ReactShortcutProvider` to different part of your page to achieve scoped shortcut register.
 
-### `useShortcut: () => ReactShortcutContextValue`
+### `useShortcut: () => ReactShortcutContextValue;`
 
 React Hook, used to get `react-shortcut` API.
 
@@ -334,9 +380,17 @@ React Hook, used to get `react-shortcut` API.
 
 Register shortcut handler, return false if current shortcut has registered or current shortcut is invalid.
 
-### `ReactShortcutContextValue.unregisterShortcut: (accelerator: Accelerator) => void;`
+### `ReactShortcutContextValue.unregisterShortcut: (accelerator: Accelerator) => boolean;`
 
 Unregister shortcut handler, return false if current shortcut has not registered or shortcut is invalid.
+
+### `ReactShortcutContextValue.enableShortcut: (accelerator: Accelerator) => boolean;`
+
+enable shortcut, return false if current shortcut has not registered or shortcut is invalid.
+
+### `ReactShortcutContextValue.disableShortcut: (accelerator: Accelerator) => boolean;`
+
+disable shortcut, return false if current shortcut has not registered or shortcut is invalid.
 
 ### `ReactShortcutContextValue.isShortcutRegistered: (accelerator: Accelerator) => boolean;`
 
