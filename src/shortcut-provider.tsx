@@ -28,13 +28,8 @@ export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function Re
       disableShortcut: shortcutRegistry.disableShortcut.bind(shortcutRegistry),
       isShortcutRegistered: shortcutRegistry.isShortcutRegistered.bind(shortcutRegistry),
       getCurrentKeyPressed: shortcutRegistry.getCurrentKeyPressed.bind(shortcutRegistry),
-      getElement() {
-        if (!scope) {
-          return window;
-        } else if (scope.current) {
-          return scope.current;
-        }
-      },
+      onKeydown: shortcutRegistry.onKeydown.bind(shortcutRegistry),
+      onKeyup: shortcutRegistry.onKeyup.bind(shortcutRegistry),
     };
   }, [scope?.current]);
 

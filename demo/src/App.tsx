@@ -33,15 +33,11 @@ interface MainProps {
 const Main: FC<MainProps> = function Main(props) {
   const [keyPressed, setKeyPressed] = useState<string>('');
 
-  const { getElement, getCurrentKeyPressed } = useShortcut();
+  const { onKeydown, getCurrentKeyPressed } = useShortcut();
   useEffect(() => {
-    const cb = () => {
+    return onKeydown(() => {
       setKeyPressed(getCurrentKeyPressed());
-    };
-    getElement()!.addEventListener('keydown', cb);
-    return () => {
-      getElement()!.removeEventListener('keydown', cb);
-    };
+    });
   }, []);
 
   return (

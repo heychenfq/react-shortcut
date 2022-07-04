@@ -45,6 +45,7 @@
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@types/debug": "^4.1.7",
+    "@types/events": "^3.0.0",
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
@@ -63,6 +64,7 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "events": "^3.3.0"
   }
 }

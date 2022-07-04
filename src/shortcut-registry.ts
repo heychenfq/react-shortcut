@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { EventEmitter } from 'events';
 import {
   KeyCode,
   KeyCodesSupported,
@@ -8,7 +9,7 @@ import {
   ModifierKeyCodeName,
   KeyCodeName,
 } from './key-codes';
-import { Dispose, ShortcutCallback } from './shortcut-context';
+import { Dispose, KeyboardEventListener } from './shortcut-context';
 import { AcceleratorParser, type Accelerator } from './accelerator-parser';
 import { noop } from './utils';
 
@@ -17,7 +18,7 @@ interface ShortcutRegister {
   modifiers: Array<Accelerator>;
   normalKeys: Array<Accelerator>;
   enabled: boolean;
-  callback: ShortcutCallback;
+  callback: KeyboardEventListener;
 }
 
 interface ShortcutRegisterOptions {
@@ -54,6 +55,7 @@ export class ShortcutRegistry {
   private readonly debug: (...args: any[]) => void;
   private readonly options: ShortcutRegisterOptions;
   private readonly parser = new AcceleratorParser();
+  private readonly eventEmitter = new EventEmitter();
   private shortcutRegistered: Array<ShortcutRegister> = [];
   private modifiersPressed: Array<ModifierKeyCode> = [];
   private normalKeysPressed: Array<NormalKeyCode> = [];
@@ -73,7 +75,7 @@ export class ShortcutRegistry {
     }
   }
 
-  registerShortcut(accelerator: Accelerator, callback: ShortcutCallback): boolean {
+  registerShortcut(accelerator: Accelerator, callback: KeyboardEventListener): boolean {
     try {
       const [modifiers, normalKeys] = this.parser.parseAccelerator(accelerator);
       const matchShortcut = this.matchShortcut(modifiers, normalKeys);
@@ -171,6 +173,20 @@ export class ShortcutRegistry {
     ].join(AcceleratorParser.separator);
   }
 
+  onKeydown(cb: KeyboardEventListener): Dispose {
+    this.eventEmitter.addListener('keydown', cb);
+    return () => {
+      this.eventEmitter.removeListener('keydown', cb);
+    };
+  }
+
+  onKeyup(cb: KeyboardEventListener): Dispose {
+    this.eventEmitter.addListener('keyup', cb);
+    return () => {
+      this.eventEmitter.removeListener('keyup', cb);
+    };
+  }
+
   private matchShortcut(modifiers: Array<Accelerator>, normalKeys: Array<Accelerator>): ShortcutRegister | undefined {
     return this.shortcutRegistered.find((item) => {
       const modifiersSet = new Set([...item.modifiers, ...modifiers]);
@@ -216,6 +232,7 @@ export class ShortcutRegistry {
       this.normalKeysPressed.push(keycode);
     }
     this.triggerShortcutEventIfHandlerFound(event);
+    this.eventEmitter.emit('keydown', event);
   }
 
   private handleKeyup(event: KeyboardEvent) {
@@ -227,6 +244,7 @@ export class ShortcutRegistry {
       // reset keycode record when modifiers change
       this.normalKeysPressed = [];
     }
+    this.eventEmitter.emit('keyup', event);
   }
 
   private clear() {

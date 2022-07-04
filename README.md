@@ -350,17 +350,18 @@ interface ReactShortcutProviderProps {
 }
 
 type Accelerator = string;
-
-type ShortcutCallback = (event: KeyboardEvent) => void;
+export type Dispose = () => void;
+type KeyboardEventListener = (event: KeyboardEvent) => void;
 
 interface ReactShortcutContextValue {
-  registerShortcut(accelerator: Accelerator, callback: ShortcutCallback): boolean;
+  registerShortcut(accelerator: Accelerator, callback: KeyboardEventListener): boolean;
   unregisterShortcut(accelerator: Accelerator): boolean;
   enableShortcut(accelerator: Accelerator): boolean;
   disableShortcut(accelerator: Accelerator): boolean;
   isShortcutRegistered(accelerator: Accelerator): boolean;
   getCurrentKeyPressed(): Accelerator;
-  getElement(): HTMLElement | Window | undefined;
+  onKeydown(listener: KeyboardEventListener): Dispose;
+  onKeyup(listener: KeyboardEventListener): Dispose;
 }
 ```
 
@@ -376,7 +377,7 @@ React Context Provider of `react-shortcut`. The most common used case is wrap in
 
 React Hook, used to get `react-shortcut` API.
 
-### `ReactShortcutContextValue.registerShortcut: (accelerator: Accelerator, callback: ShortcutCallback) => boolean`
+### `ReactShortcutContextValue.registerShortcut: (accelerator: Accelerator, callback: KeyboardEventListener) => boolean`
 
 Register shortcut handler, return false if current shortcut has registered or current shortcut is invalid.
 
@@ -400,9 +401,13 @@ Return true is current short has registered.
 
 Return current keys pressed.
 
-### `ReactShortcutContextValue.getElement: () => HTMLElement | Window | undefined;`
+### `ReactShortcutContextValue.onKeydown: (listener: KeyboardEventListener) => Dispose;`
 
-Get the current element which keyboard event listened. Should be invoked in `useEffect` callback only. This method will return undefined when dom has not rendered.
+Register `keydown` keyboardEvent listener on element attached, unlike `registerShortcut`, listener will be invoked whenever key pressed.
+
+### `ReactShortcutContextValue.onKeyup: (listener: KeyboardEventListener) => Dispose;`
+
+Register `keyup` keyboardEvent listener on element attached, unlike `registerShortcut`, listener will be invoked whenever key released.If you pressed `Command` key on MacOS, the `keyup` event may be not triggered because it is a browser default behavior, more detail see: https://github.com/electron/electron/issues/5188.
 
 ## Browser Compatibility
 
@@ -424,14 +429,14 @@ Get the current element which keyboard event listened. Should be invoked in `use
 
 | **Features**                               | **react-shortcut** | **react-hotkeys-hook** | **react-hot-keys** |
 | ------------------------------------------ | ------------------ | ---------------------- | ------------------ |
-| Dynamic register                           | ✅                 | ✅                     | ❌                 |
+| Dynamic register                           | ✅                 | ❌                     | ❌                 |
 | Page scoped register                       | ✅                 | ✅                     | ❌                 |
 | Strict/Loose mode                          | ✅                 | ❌                     | ❌                 |
-| Dynamic enable/disable shortcut regsitered | ✅                 | ✅ (use namespace)     | ✅(use namespace)  |
-| Normal key combinations                    | ✅                 | ✅                     | ❌                 |
-| Namespace                                  | ❌                 | ✅                     | ✅                 |
+| Dynamic enable/disable shortcut registered | ✅                 | ✅                     | ❌                 |
+| Normal key combinations                    | ✅                 | ✅                     | ✅                 |
+| Namespace                                  | ❌                 | ❌                     | ✅                 |
 | Shortcuts validation                       | ✅                 | ❌                     | ❌                 |
-| Used React ≤ 16                            | ❌                 | ❌                     | ✅                 |
+| Used React ≤ 16.8.0                        | ❌                 | ❌                     | ✅                 |
 
 ## License
 
