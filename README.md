@@ -1,4 +1,4 @@
-# react-shortcut
+# react-use-shortcuts
 
 ![](https://img.shields.io/github/license/heychenfq/react-shortcut)
 ![](https://img.shields.io/github/issues/heychenfq/react-shortcut)
@@ -31,11 +31,11 @@ Full shortcut solution for react app.
 
 ```bash
 # npm
-npm install react-shortcut
+npm install react-use-shortcuts
 # yarn
-yarn add react-shortcut
+yarn add react-use-shortcuts
 # pnpm
-pnpm add react-shortcut
+pnpm add react-use-shortcuts
 ```
 
 ## Supported Keys
@@ -96,7 +96,7 @@ pnpm add react-shortcut
 
 ```tsx
 import React, { useEffect } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -131,7 +131,7 @@ function Main() {
 
 ```tsx
 import React, { useEffect } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -162,7 +162,7 @@ function Main() {
 
 ```tsx
 import React, { useEffect, useRef } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   const scope1 = useRef<HTMLDivElement>(null);
@@ -205,11 +205,11 @@ function Main() {
 
 ### 4. Loose mode.
 
-`react-shortcut` work in strict mode by default, if you want to enable loose mode, you can set `strict` to false. it is only affect the `getCurrentKeyPressed` API.
+`react-use-shortcuts` work in strict mode by default, if you want to enable loose mode, you can set `strict` to false. it is only affect the `getCurrentKeyPressed` API.
 
 ```tsx
 import React, { useEffect } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -243,7 +243,7 @@ function Main() {
 
 ```tsx
 import React, { useEffect } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -280,7 +280,7 @@ function Main() {
 
 ```tsx
 import React, { useEffect, useCallback, useState } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -324,7 +324,7 @@ function Main() {
 
 ```tsx
 import React, { useEffect, useCallback, useState } from 'react';
-import { ReactShortcutProvider, useShortcut } from 'react-shortcut';
+import { ReactShortcutProvider, useShortcut } from 'react-use-shortcuts';
 
 function App() {
   return (
@@ -413,11 +413,11 @@ Shortcut description, consist of multiple modifiers or normal keys join with `+`
 
 ### `ReactShortcutProvider: React.FC<ReactShortcutProviderProps>;`
 
-React Context Provider of `react-shortcut`. The most common used case is wrap in the root react component. You can also apply multiple `ReactShortcutProvider` to different part of your page to achieve scoped shortcut register.
+React Context Provider of `react-use-shortcuts`. The most common used case is wrap in the root react component. You can also apply multiple `ReactShortcutProvider` to different part of your page to achieve scoped shortcut register.
 
 ### `useShortcut: () => ReactShortcutContextValue;`
 
-React Hook, used to get `react-shortcut` API.
+React Hook, used to get `react-use-shortcuts` API.
 
 ### `ReactShortcutContextValue.registerShortcut: (accelerator: Accelerator, callback: KeyboardEventListener) => boolean;`
 
@@ -469,16 +469,16 @@ Register `keyup` keyboardEvent listener on element attached, unlike `registerSho
 
 ## Comparisons
 
-| **Features**                               | **react-shortcut** | **react-hotkeys-hook** | **react-hot-keys** |
-| ------------------------------------------ | ------------------ | ---------------------- | ------------------ |
-| Dynamic register                           | ✅                 | ❌                     | ❌                 |
-| Page scoped register                       | ✅                 | ✅                     | ❌                 |
-| Strict/Loose mode                          | ✅                 | ❌                     | ❌                 |
-| Dynamic enable/disable shortcut registered | ✅                 | ✅                     | ❌                 |
-| Normal key combinations                    | ✅                 | ✅                     | ✅                 |
-| Namespace                                  | ❌                 | ❌                     | ✅                 |
-| Shortcuts validation                       | ✅                 | ❌                     | ❌                 |
-| Used React ≤ 16.8.0                        | ❌                 | ❌                     | ✅                 |
+| **Features**                               | **react-use-shortcuts** | **react-hotkeys-hook** | **react-hot-keys** |
+| ------------------------------------------ | ----------------------- | ---------------------- | ------------------ |
+| Dynamic register                           | ✅                      | ❌                     | ❌                 |
+| Page scoped register                       | ✅                      | ✅                     | ❌                 |
+| Strict/Loose mode                          | ✅                      | ❌                     | ❌                 |
+| Dynamic enable/disable shortcut registered | ✅                      | ✅                     | ❌                 |
+| Normal key combinations                    | ✅                      | ✅                     | ✅                 |
+| Namespace                                  | ❌                      | ❌                     | ✅                 |
+| Shortcuts validation                       | ✅                      | ❌                     | ❌                 |
+| Used React ≤ 16.8.0                        | ❌                      | ❌                     | ✅                 |
 
 ## License
 

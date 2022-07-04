@@ -77,8 +77,8 @@ export class ShortcutRegistry {
       if (typeof this.options.debug === 'function') {
         this.debug = this.options.debug;
       } else {
-        this.debug = debug('ReactShortcut');
-        debug.enable('ReactShortcut');
+        this.debug = debug('ReactUseShortcuts');
+        debug.enable('ReactUseShortcuts');
       }
     } else {
       this.debug = noop;
