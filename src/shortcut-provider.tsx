@@ -1,10 +1,11 @@
 import { ReactNode, FC, useEffect, useMemo } from 'react';
-import { ReactShortcutContext, ReactShortcutContextValue } from './shortcut-context';
+import { ReactShortcutContext, ReactShortcutContextValue, Filter } from './shortcut-context';
 import { ShortcutRegistry } from './shortcut-registry';
 
 export interface ReactShortcutOptions {
   strict?: boolean;
   debug?: boolean;
+  filter?: Filter;
   scope?: React.RefObject<HTMLElement>;
 }
 
@@ -14,10 +15,10 @@ export interface ReactShortcutProviderProps {
 }
 
 export const ReactShortcutProvider: FC<ReactShortcutProviderProps> = function ReactShortcutProvider(props) {
-  const { children, options: { strict = false, debug = false, scope } = {} } = props;
+  const { children, options: { strict = true, debug = false, filter, scope } = {} } = props;
 
   const shortcutRegistry = useMemo(() => {
-    return new ShortcutRegistry({ strict, debug });
+    return new ShortcutRegistry({ strict, debug, filter });
   }, []);
 
   const contextValue = useMemo<ReactShortcutContextValue>(() => {

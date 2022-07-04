@@ -295,6 +295,35 @@ describe('loose mode', () => {
   });
 });
 
+describe('onKeyup and onKeydown', () => {
+  it('onKeydown', () => {
+    const listener = jest.fn();
+    const dispose = shortRegistry.onKeydown(listener);
+    dispatchEvent('keydown', 'KeyA');
+    expect(listener).toBeCalledTimes(1);
+    dispatchEvent('keydown', 'KeyA', true);
+    expect(listener).toBeCalledTimes(1);
+    dispatchEvent('keydown', 'KeyA');
+    expect(listener).toBeCalledTimes(2);
+    dispose();
+    dispatchEvent('keydown', 'KeyA');
+    expect(listener).toBeCalledTimes(2);
+  });
+  it('onKeyup', () => {
+    const listener = jest.fn();
+    const dispose = shortRegistry.onKeyup(listener);
+    dispatchEvent('keyup', 'KeyA');
+    expect(listener).toBeCalledTimes(1);
+    dispatchEvent('keyup', 'KeyA');
+    expect(listener).toBeCalledTimes(2);
+    dispatchEvent('keyup', 'KeyA');
+    expect(listener).toBeCalledTimes(3);
+    dispose();
+    dispatchEvent('keyup', 'KeyA');
+    expect(listener).toBeCalledTimes(3);
+  });
+});
+
 function dispatchEvent(
   type: 'keydown' | 'keyup' | 'blur',
   code: KeyCode,

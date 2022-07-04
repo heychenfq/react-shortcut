@@ -2,6 +2,7 @@ import React from 'react';
 import { Accelerator } from './accelerator-parser';
 
 export type Dispose = () => void;
+export type Filter = (event: KeyboardEvent) => boolean;
 export type KeyboardEventListener = (event: KeyboardEvent) => void;
 
 export interface ReactShortcutContextValue {

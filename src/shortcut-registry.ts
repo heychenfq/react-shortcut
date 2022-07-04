@@ -9,7 +9,7 @@ import {
   ModifierKeyCodeName,
   KeyCodeName,
 } from './key-codes';
-import { Dispose, KeyboardEventListener } from './shortcut-context';
+import { Dispose, Filter, KeyboardEventListener } from './shortcut-context';
 import { AcceleratorParser, type Accelerator } from './accelerator-parser';
 import { noop } from './utils';
 
@@ -24,6 +24,7 @@ interface ShortcutRegister {
 interface ShortcutRegisterOptions {
   strict?: boolean;
   debug?: boolean;
+  filter?: Filter;
 }
 
 export class ShortcutRegistry {
@@ -52,6 +53,14 @@ export class ShortcutRegistry {
     return ShortcutRegistry.KeyCodeModifiers.has(keycode as ModifierKeyCode);
   }
 
+  private static defaultFilter: Filter = (event) => {
+    if (event.repeat) return false;
+    if (event.target && event.target instanceof HTMLElement) {
+      return !['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName) && !event.target.isContentEditable;
+    }
+    return true;
+  };
+
   private readonly debug: (...args: any[]) => void;
   private readonly options: ShortcutRegisterOptions;
   private readonly parser = new AcceleratorParser();
@@ -63,6 +72,7 @@ export class ShortcutRegistry {
   constructor(options?: ShortcutRegisterOptions) {
     this.options = options ?? {};
     this.options.strict = this.options.strict ?? true;
+    this.options.filter = this.options.filter ?? ShortcutRegistry.defaultFilter;
     if (this.options.debug) {
       if (typeof this.options.debug === 'function') {
         this.debug = this.options.debug;
@@ -218,7 +228,7 @@ export class ShortcutRegistry {
   }
 
   private handleKeydown(event: KeyboardEvent) {
-    if (event.repeat) return;
+    if (!this.options.filter!(event)) return;
     const keycode = event.code as KeyCode;
     if (!KeyCodesSupported.includes(keycode)) {
       this.debug(`Unsupported keyCode: ${event.code}!`);
@@ -236,6 +246,7 @@ export class ShortcutRegistry {
   }
 
   private handleKeyup(event: KeyboardEvent) {
+    if (!this.options.filter!(event)) return;
     const keycode = event.code as KeyCode;
     if (ShortcutRegistry.keyCodeIsModifiers(keycode)) {
       this.modifiersPressed = this.modifiersPressed.filter((code) => {

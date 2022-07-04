@@ -31,6 +31,24 @@ export type NormalKeyCode =
   | 'Digit8'
   | 'Digit9'
   | 'Digit0'
+  // numpad
+  | 'Numpad1'
+  | 'Numpad2'
+  | 'Numpad3'
+  | 'Numpad4'
+  | 'Numpad5'
+  | 'Numpad6'
+  | 'Numpad7'
+  | 'Numpad8'
+  | 'Numpad9'
+  | 'Numpad0'
+  | 'NumpadEnter'
+  | 'NumpadMultiply'
+  | 'NumpadDivide'
+  | 'NumpadSubtract'
+  | 'NumpadAdd'
+  | 'NumLock'
+  | 'NumpadDecimal'
   // words
   | 'KeyA'
   | 'KeyB'
@@ -69,13 +87,14 @@ export type NormalKeyCode =
   | 'Backslash'
   | 'Backquote'
   // others
+  | 'Space'
   | 'Escape'
   | 'Minus'
   | 'Equal'
   | 'Backspace'
   | 'Delete'
   | 'Tab'
-  | 'Capslock'
+  | 'CapsLock'
   | 'Enter'
   | 'ArrowUp'
   | 'ArrowDown'
@@ -84,7 +103,8 @@ export type NormalKeyCode =
   | 'Home'
   | 'End'
   | 'PageUp'
-  | 'PageDown';
+  | 'PageDown'
+  | 'Insert';
 
 export type KeyCode = ModifierKeyCode | NormalKeyCode;
 
@@ -173,14 +193,18 @@ export type NormalKeyCodeName =
   | '\\'
   | '`'
   // others
+  | 'Space'
   | 'Esc'
   | 'Escape'
   | '-'
   | '='
+  | '+'
+  | '*'
+  | 'NumLock'
   | 'Backspace'
   | 'Delete'
   | 'Tab'
-  | 'Capslock'
+  | 'CapsLock'
   | 'Enter'
   | 'ArrowUp'
   | 'ArrowDown'
@@ -189,7 +213,8 @@ export type NormalKeyCodeName =
   | 'Home'
   | 'End'
   | 'PageUp'
-  | 'PageDown';
+  | 'PageDown'
+  | 'Insert';
 
 export type KeyCodeName = ModifierKeyCodeName | NormalKeyCodeName;
 
@@ -231,16 +256,16 @@ export const keyCodeName2KeyCode = new Map<KeyCodeName, Array<KeyCode>>([
   ['F11', ['F11']],
   ['F12', ['F12']],
   // numbers
-  ['1', ['Digit1']],
-  ['2', ['Digit2']],
-  ['3', ['Digit3']],
-  ['4', ['Digit4']],
-  ['5', ['Digit5']],
-  ['6', ['Digit6']],
-  ['7', ['Digit7']],
-  ['8', ['Digit8']],
-  ['9', ['Digit9']],
-  ['0', ['Digit0']],
+  ['1', ['Digit1', 'Numpad1']],
+  ['2', ['Digit2', 'Numpad2']],
+  ['3', ['Digit3', 'Numpad3']],
+  ['4', ['Digit4', 'Numpad4']],
+  ['5', ['Digit5', 'Numpad5']],
+  ['6', ['Digit6', 'Numpad6']],
+  ['7', ['Digit7', 'Numpad7']],
+  ['8', ['Digit8', 'Numpad8']],
+  ['9', ['Digit9', 'Numpad9']],
+  ['0', ['Digit0', 'Numpad0']],
   // words
   ['a', ['KeyA']],
   ['b', ['KeyB']],
@@ -270,24 +295,28 @@ export const keyCodeName2KeyCode = new Map<KeyCodeName, Array<KeyCode>>([
   ['z', ['KeyZ']],
   // punctuations
   [',', ['Comma']],
-  ['.', ['Period']],
-  ['/', ['Slash']],
+  ['.', ['Period', 'NumpadDecimal']],
+  ['/', ['Slash', 'NumpadDivide']],
   [';', ['Semicolon']],
-  ["'", ['Backslash']],
+  ["'", ['Quote']],
   ['[', ['BracketLeft']],
   [']', ['BracketRight']],
   ['\\', ['Backslash']],
   ['`', ['Backquote']],
   // others
+  ['Space', ['Space']],
   ['Esc', ['Escape']],
   ['Escape', ['Escape']],
-  ['-', ['Minus']],
+  ['-', ['Minus', 'NumpadSubtract']],
   ['=', ['Equal']],
+  ['+', ['NumpadAdd']],
+  ['*', ['NumpadMultiply']],
+  ['NumLock', ['NumLock']],
   ['Backspace', ['Backspace']],
   ['Delete', ['Delete']],
   ['Tab', ['Tab']],
-  ['Capslock', ['Capslock']],
-  ['Enter', ['Enter']],
+  ['CapsLock', ['CapsLock']],
+  ['Enter', ['Enter', 'NumpadEnter']],
   ['ArrowUp', ['ArrowUp']],
   ['ArrowDown', ['ArrowDown']],
   ['ArrowLeft', ['ArrowLeft']],
@@ -296,6 +325,7 @@ export const keyCodeName2KeyCode = new Map<KeyCodeName, Array<KeyCode>>([
   ['End', ['End']],
   ['PageUp', ['PageUp']],
   ['PageDown', ['PageDown']],
+  ['Insert', ['Insert']],
 ]);
 
 export const keyCode2KeyCodeName = new Map<KeyCode, KeyCodeName>([
@@ -334,13 +364,31 @@ export const keyCode2KeyCodeName = new Map<KeyCode, KeyCodeName>([
   ['Digit8', '8'],
   ['Digit9', '9'],
   ['Digit0', '0'],
+  // numpad
+  ['Numpad1', '1'],
+  ['Numpad2', '2'],
+  ['Numpad3', '3'],
+  ['Numpad4', '4'],
+  ['Numpad5', '5'],
+  ['Numpad6', '6'],
+  ['Numpad7', '7'],
+  ['Numpad8', '8'],
+  ['Numpad9', '9'],
+  ['Numpad0', '0'],
+  ['NumLock', 'NumLock'],
+  ['NumpadEnter', 'Enter'],
+  ['NumpadDivide', '/'],
+  ['NumpadMultiply', '*'],
+  ['NumpadSubtract', '-'],
+  ['NumpadAdd', '+'],
+  ['NumpadDecimal', '.'],
   // words
   ['KeyA', 'a'],
   ['KeyB', 'b'],
   ['KeyC', 'c'],
   ['KeyD', 'd'],
   ['KeyE', 'e'],
-  ['KeyF', 'g'],
+  ['KeyF', 'f'],
   ['KeyG', 'g'],
   ['KeyH', 'h'],
   ['KeyI', 'i'],
@@ -366,19 +414,20 @@ export const keyCode2KeyCodeName = new Map<KeyCode, KeyCodeName>([
   ['Period', '.'],
   ['Slash', '/'],
   ['Semicolon', ';'],
-  ['Backslash', "'"],
+  ['Quote', "'"],
   ['BracketLeft', '['],
   ['BracketRight', ']'],
   ['Backslash', '\\'],
   ['Backquote', '`'],
   // others
+  ['Space', 'Space'],
   ['Escape', 'Escape'],
   ['Minus', '-'],
   ['Equal', '='],
   ['Backspace', 'Backspace'],
   ['Delete', 'Delete'],
   ['Tab', 'Tab'],
-  ['Capslock', 'Capslock'],
+  ['CapsLock', 'CapsLock'],
   ['Enter', 'Enter'],
   ['ArrowUp', 'ArrowUp'],
   ['ArrowDown', 'ArrowDown'],
@@ -388,6 +437,7 @@ export const keyCode2KeyCodeName = new Map<KeyCode, KeyCodeName>([
   ['End', 'End'],
   ['PageUp', 'PageUp'],
   ['PageDown', 'PageDown'],
+  ['Insert', 'Insert'],
 ]);
 
 export const KeyCodesSupported = [...keyCode2KeyCodeName.keys()];
